@@ -15,4 +15,4 @@ jobs:
               uses: microsoft/setup-msbuild@v1.0.2
             - run: |
                 echo "Testing!"
-                msbuild.exe --version
+                msbuild.exe .\JotunnLib\JotunnLib.sln
