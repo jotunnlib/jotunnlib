@@ -5,22 +5,38 @@ name: Create DLL on PR
 'on': pull_request
 jobs:
     build:
-        runs-on: windows-latest
+        runs-on: ubuntu-latest
         steps:
             - name: Checkout
               uses: actions/checkout@v2
               with:
                   ref: ${{ github.head_ref }}
-            - name: Add msbuild to PATH
-              uses: microsoft/setup-msbuild@v1.0.2
+            - uses: actions/setup-dotnet@v1
 
-                # Install NuGet
+            # Install NuGet
             - uses: nuget/setup-nuget@v1
               name: Install NuGet
 
             # Install NuGet dependencies
             - name: Install NuGet dependencies
               run: nuget restore JotunnLib.sln
+
+            # Get build commands
+            - name: Get build commands
+              run: |
+                sudo apt-get update
+                sudo apt-get install -y git mono-complete mono-xbuild
+
+            # Download BepInEx
+            - name: Download and unzip BepInEx
+              run: |
+                wget -O bepinex.zip "https://valheim.thunderstore.io/package/download/denikson/BepInExPack_Valheim/5.4.800/"
+                unzip bepinex.zip -d BepInExRaw
+                tree
+
+            # Build DLLs
+            - name: Build solution
+              run: xbuild JotunnLib.sln /p:Configuration=Debug
 
             # Old
             # echo "Testing!"
@@ -34,16 +50,16 @@ jobs:
             #     tree /f
             #     msbuild.exe .\JotunnLib.sln
 
-            - run: |
-                echo "Testing!"
-                Invoke-WebRequest -Uri "https://valheim.thunderstore.io/package/download/denikson/BepInExPack_Valheim/5.4.800/" -OutFile ".\bepinex.zip"
-                tree /f
-                Expand-Archive -Path ".\bepinex.zip" -DestinationPath ".\BepInExRaw"
-                Move-Item -Path .\BepInExRaw\BepInExPack_Valheim\ "D:\BepInEx"
-                New-Item -Path "D:\" -Name "valheim_Data" -ItemType "directory"
-                Move-Item -Path D:\BepInEx\unstripped_corlib\ D:\valheim_Data\Managed
-                setx VALHEIM_INSTALL "D:\"
-                tree /f
-                echo "D Tree"
-                tree D:\
-                msbuild.exe .\JotunnLib.sln
+            # - run: |
+            #     echo "Testing!"
+            #     Invoke-WebRequest -Uri "https://valheim.thunderstore.io/package/download/denikson/BepInExPack_Valheim/5.4.800/" -OutFile ".\bepinex.zip"
+            #     tree /f
+            #     Expand-Archive -Path ".\bepinex.zip" -DestinationPath ".\BepInExRaw"
+            #     Move-Item -Path .\BepInExRaw\BepInExPack_Valheim\ "D:\BepInEx"
+            #     New-Item -Path "D:\" -Name "valheim_Data" -ItemType "directory"
+            #     Move-Item -Path D:\BepInEx\unstripped_corlib\ D:\valheim_Data\Managed
+            #     setx VALHEIM_INSTALL "D:\"
+            #     tree /f
+            #     echo "D Tree"
+            #     tree D:\
+            #     msbuild.exe .\JotunnLib.sln
