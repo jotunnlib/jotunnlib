@@ -16,4 +16,4 @@ jobs:
             - run: |
                 echo "Testing!"
                 tree /f
-                msbuild.exe .\JotunnLib\JotunnLib.sln
+                msbuild.exe .\JotunnLib.sln
