@@ -25,7 +25,7 @@ jobs:
             - run: |
                 echo "Testing!"
                 Invoke-WebRequest -Uri "https://valheim.thunderstore.io/package/download/denikson/BepInExPack_Valheim/5.4.800/" -OutFile ".\bepinex.zip"                Expand-Archive -Path .\bepinex.zip -DestinationPath BepInExRaw
-                Expand-Archive -Path "".\bepinex.zip" -DestinationPath "BepInExRaw"
+                Expand-Archive -Path ".\bepinex.zip" -DestinationPath ".\BepInExRaw"
                 Move-Item -Path .\BepInExRaw\BepInExPack_Valheim\ .\ValheimInstall
                 setx VALHEIM_INSTALL=.\ValheimInstall
                 tree /f
