@@ -22,14 +22,24 @@ jobs:
             - name: Install NuGet dependencies
               run: nuget restore JotunnLib.sln
 
+            # Old
+            # echo "Testing!"
+            #     Invoke-WebRequest -Uri "https://valheim.thunderstore.io/package/download/denikson/BepInExPack_Valheim/5.4.800/" -OutFile ".\bepinex.zip"
+            #     tree /f
+            #     Expand-Archive -Path ".\bepinex.zip" -DestinationPath ".\BepInExRaw"
+            #     Move-Item -Path .\BepInExRaw\BepInExPack_Valheim\ .\ValheimInstall
+            #     New-Item -Path ".\ValheimInstall" -Name "valheim_Data" -ItemType "directory"
+            #     Move-Item -Path .\ValheimInstall\unstripped_corlib\ .\ValheimInstall\valheim_Data\Managed
+            #     setx VALHEIM_INSTALL .\ValheimInstall
+            #     tree /f
+            #     msbuild.exe .\JotunnLib.sln
+
             - run: |
                 echo "Testing!"
                 Invoke-WebRequest -Uri "https://valheim.thunderstore.io/package/download/denikson/BepInExPack_Valheim/5.4.800/" -OutFile ".\bepinex.zip"
                 tree /f
                 Expand-Archive -Path ".\bepinex.zip" -DestinationPath ".\BepInExRaw"
-                Move-Item -Path .\BepInExRaw\BepInExPack_Valheim\ .\ValheimInstall
-                New-Item -Path ".\ValheimInstall" -Name "valheim_Data" -ItemType "directory"
-                Move-Item -Path .\ValheimInstall\unstripped_corlib\ .\ValheimInstall\valheim_Data\Managed
-                setx VALHEIM_INSTALL .\ValheimInstall
+                Move-Item -Path .\BepInExRaw\BepInExPack_Valheim\ .
+                setx VALHEIM_INSTALL .
                 tree /f
                 msbuild.exe .\JotunnLib.sln
