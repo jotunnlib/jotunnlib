@@ -15,5 +15,5 @@ jobs:
               uses: microsoft/setup-msbuild@v1.0.2
             - run: |
                 echo "Testing!"
-                tree
+                tree /f
                 msbuild.exe .\JotunnLib\JotunnLib.sln
