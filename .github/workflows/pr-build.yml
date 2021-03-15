@@ -39,7 +39,9 @@ jobs:
                 Invoke-WebRequest -Uri "https://valheim.thunderstore.io/package/download/denikson/BepInExPack_Valheim/5.4.800/" -OutFile ".\bepinex.zip"
                 tree /f
                 Expand-Archive -Path ".\bepinex.zip" -DestinationPath ".\BepInExRaw"
-                Move-Item -Path .\BepInExRaw\BepInExPack_Valheim\* "D:\"
+                Move-Item -Path .\BepInExRaw\BepInExPack_Valheim\ "D:\BepInEx"
+                New-Item -Path "D:\" -Name "valheim_Data" -ItemType "directory"
+                Move-Item -Path D:\BepInEx\unstripped_corlib\ D:\valheim_Data\Managed
                 setx VALHEIM_INSTALL "D:\"
                 tree /f
                 msbuild.exe .\JotunnLib.sln
