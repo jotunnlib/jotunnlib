@@ -28,6 +28,7 @@ jobs:
                 tree /f
                 Expand-Archive -Path ".\bepinex.zip" -DestinationPath ".\BepInExRaw"
                 Move-Item -Path .\BepInExRaw\BepInExPack_Valheim\ .\ValheimInstall
+                New-Item -Path ".\ValheimInstall" -Name "valheim_Data" -ItemType "directory"
                 Move-Item -Path .\ValheimInstall\unstripped_corlib\ .\ValheimInstall\valheim_Data\Managed
                 setx VALHEIM_INSTALL .\ValheimInstall
                 tree /f
