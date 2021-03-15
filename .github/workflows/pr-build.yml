@@ -44,4 +44,6 @@ jobs:
                 Move-Item -Path D:\BepInEx\unstripped_corlib\ D:\valheim_Data\Managed
                 setx VALHEIM_INSTALL "D:\"
                 tree /f
+                echo "D Tree"
+                tree D:\
                 msbuild.exe .\JotunnLib.sln
