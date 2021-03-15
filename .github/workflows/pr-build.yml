@@ -28,6 +28,6 @@ jobs:
                 tree /f
                 Expand-Archive -Path ".\bepinex.zip" -DestinationPath ".\BepInExRaw"
                 Move-Item -Path .\BepInExRaw\BepInExPack_Valheim\ .\ValheimInstall
-                setx VALHEIM_INSTALL=.\ValheimInstall
+                setx VALHEIM_INSTALL .\ValheimInstall
                 tree /f
                 msbuild.exe .\JotunnLib.sln
