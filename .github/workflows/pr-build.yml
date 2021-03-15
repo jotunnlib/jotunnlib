@@ -21,8 +21,12 @@ jobs:
             # Install NuGet dependencies
             - name: Install NuGet dependencies
               run: nuget restore JotunnLib.sln
-              
+
             - run: |
                 echo "Testing!"
+                wget https://valheim.thunderstore.io/package/download/denikson/BepInExPack_Valheim/5.4.800/ -UseBasicParsing -OutFile "bepinex.zip"
+                Expand-Archive -Path .\bepinex.zip -DestinationPath BepInExRaw
+                Move-Item -Path .\BepInExRaw\BepInExPack_Valheim\ .\ValheimInstall
+                setx VALHEIM_INSTALL=.\ValheimInstall
                 tree /f
                 msbuild.exe .\JotunnLib.sln
