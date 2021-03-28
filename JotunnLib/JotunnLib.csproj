@@ -369,6 +369,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\ButtonConfig.cs" />
+    <Compile Include="Entities\CookingRecipeConfig.cs" />
     <Compile Include="Entities\LocalizationConfig.cs" />
     <Compile Include="Entities\PieceConfig.cs" />
     <Compile Include="Entities\PieceRequirementConfig.cs" />

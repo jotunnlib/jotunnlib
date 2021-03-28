@@ -8,11 +8,27 @@ namespace JotunnLib.Managers
 {
     public class ObjectManager : Manager
     {
+        /// <summary>
+        /// Single global instance of the ObjectManager. Use this to interact with the ObjectManager.
+        /// </summary>
         public static ObjectManager Instance { get; private set; }
 
+        /// <summary>
+        /// Event called when it's time to register your objects (items, recipes, etc.) into the game. <br/>
+        /// All items <b>MUST</b> be registered in a handler for this event.
+        /// </summary>
         public event EventHandler ObjectRegister;
+        
+        /// <summary>
+        /// Event called after objects (items, recipes, etc.) from the base game and all mods have all been loaded. <br/>
+        /// Use this event handler if you wish to modify existing items, recipes, etc.
+        /// </summary>
+        public event EventHandler ObjectsRegistered;
+        
         internal List<GameObject> Items = new List<GameObject>();
         internal List<Recipe> Recipes = new List<Recipe>();
+        internal Dictionary<CookingStation, CookingStation.ItemConversion> ItemConversions =
+            new Dictionary<CookingStation, CookingStation.ItemConversion>();
         
         private void Awake()
         {
@@ -35,6 +51,9 @@ namespace JotunnLib.Managers
 
             // Register new items and recipes
             ObjectRegister?.Invoke(null, EventArgs.Empty);
+
+            // Call post-register hook
+            ObjectsRegistered?.Invoke(null, EventArgs.Empty);
         }
 
         internal override void Load()
@@ -57,6 +76,18 @@ namespace JotunnLib.Managers
 
             // Update hashes
             ReflectionUtils.InvokePrivate(ObjectDB.instance, "UpdateItemHashes");
+
+            // Load item conversions
+            foreach (var pair in ItemConversions)
+            {
+                if (pair.Key == null || pair.Value == null)
+                {
+                    Debug.LogError($"Failed to load invalid ItemConversion pair: ${pair.Key}, ${pair.Value}");
+                    continue;
+                }
+
+                pair.Key.m_conversion.Add(pair.Value);
+            }
         }
 
         /// <summary>
@@ -89,28 +120,75 @@ namespace JotunnLib.Managers
         /// <param name="recipeConfig">Recipe details</param>
         public void RegisterRecipe(RecipeConfig recipeConfig)
         {
-            Recipe recipe = recipeConfig.GetRecipe();
-
-            if (recipe == null)
+            if (recipeConfig == null)
             {
-                Debug.LogError("Failed to add recipe for item: " + recipeConfig.Item);
+                Debug.LogError("Failed to register null RecipeConfig");
                 return;
             }
 
-            Recipes.Add(recipe);
+            RegisterRecipe(recipeConfig.GetRecipe());
         }
 
+        /// <summary>
+        /// Registers a new recipe
+        /// </summary>
+        /// <param name="recipe">Recipe item to register</param>
         public void RegisterRecipe(Recipe recipe)
         {
             if (recipe == null)
             {
-                Debug.LogError("Failed to add null recipe");
+                Debug.LogError("Failed to register null recipe");
+                return;
+            }
+
+            if (Recipes.Exists(r => r.name == recipe.name))
+            {
+                Debug.LogError($"Failed to register recipe with duplicate name: ${recipe.name}");
                 return;
             }
 
             Recipes.Add(recipe);
         }
 
+        /// <summary>
+        /// Registers a new item conversion for any prefab that has a CookingStation component (such as a "piece_cookingstation"). <br/>
+        /// <b>MUST</b> be called within a handler for the <see cref="ObjectRegister"/> event.
+        /// </summary>
+        /// <param name="prefabName">The name of the prefab that has the CookingStation</param>
+        /// <param name="itemConversion">Item conversion details</param>
+        public void RegisterItemConversion(string prefabName, ItemConversionConfig itemConversion)
+        {
+            GameObject prefab = PrefabManager.Instance.GetPrefab(prefabName);
+            CookingStation cookingStation = prefab?.GetComponent<CookingStation>();
+
+            if (!prefab || !cookingStation)
+            {
+                Debug.LogError("Failed to register ItemConversion for invalid CookingStation prefab: " + prefabName);
+                return;
+            }
+
+            CookingStation.ItemConversion conv = itemConversion.GetItemConversion();
+            
+            if (conv == null)
+            {
+                Debug.LogError($"Failed to register ItemConversion on ${prefabName} with invalid ItemConversionConfig");
+                return;
+            }
+
+            if (cookingStation.m_conversion.Exists(c => c.m_from == conv.m_from))
+            {
+                Debug.LogError($"Failed to register ItemConversion on ${prefabName} for item with existing conversion: ${conv.m_from.name}");
+                return;
+            }
+
+            ItemConversions.Add(cookingStation, conv);
+        }
+
+        /// <summary>
+        /// Gets an existing item prefab
+        /// </summary>
+        /// <param name="name">Prefab name</param>
+        /// <returns>Existing prefab, or null if it does not exist</returns>
         public GameObject GetItemPrefab(string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -121,9 +199,32 @@ namespace JotunnLib.Managers
             return ObjectDB.instance.GetItemPrefab(name);
         }
 
+        /// <summary>
+        /// Gets an existing item by prefab name
+        /// </summary>
+        /// <param name="name">Prefab name</param>
+        /// <returns>ItemDrop component on item prefab</returns>
         public ItemDrop GetItemDrop(string name)
         {
             return GetItemPrefab(name)?.GetComponent<ItemDrop>();
+        }
+
+        /// <summary>
+        /// Searches for a recipe by name
+        /// </summary>
+        /// <param name="name">Name of the recipe to look for</param>
+        /// <returns>The recipe if it exists, or null otherwise</returns>
+        public Recipe GetRecipe(string name)
+        {
+            Recipe recipe = Recipes.Find(r => r.name == name);
+
+            if (recipe != null)
+            {
+                return recipe;
+            }
+
+            recipe = ObjectDB.instance.m_recipes.Find(r => r.name == name);
+            return recipe;
         }
     }
 }
