@@ -21,8 +21,9 @@ namespace TestMod
         // Init handlers
         private void Awake()
         {
-            ObjectManager.Instance.ObjectRegister += registerObjects;
             PrefabManager.Instance.PrefabRegister += registerPrefabs;
+            PrefabManager.Instance.PrefabsLoaded += modifyPrefabs;
+            ObjectManager.Instance.ObjectRegister += registerObjects;
             PieceManager.Instance.PieceRegister += registerPieces;
             InputManager.Instance.InputRegister += registerInputs;
 
@@ -66,6 +67,17 @@ namespace TestMod
         {
             PrefabManager.Instance.RegisterPrefab(new TestPrefab());
             PrefabManager.Instance.RegisterPrefab(new TestCubePrefab());
+        }
+
+        // Modify existing prefabs
+        private void modifyPrefabs(object sender, EventArgs e)
+        {
+            // Cooking station item conversions
+            GameObject copperOre = PrefabManager.Instance.GetPrefab("CopperOre");
+            PrefabUtils.NestChildrenUnderAttach(copperOre);
+
+            GameObject copper = PrefabManager.Instance.GetPrefab("Copper");
+            PrefabUtils.NestChildrenUnderAttach(copper);
         }
 
         // Register new pieces
@@ -113,6 +125,21 @@ namespace TestMod
                         Amount = 1
                     }
                 }
+            });
+
+            ObjectManager.Instance.RegisterItemConversion(new ItemConversionConfig()
+            {
+                // The prefab name of the cooking station (defaults to "piece_cookingstation" if not provided)
+                CookingStation = "piece_cookingstation",
+
+                // The amount of time it will take to cook the item
+                CookTime = 5.0f,
+
+                // The item placed on the cooking station
+                FromItem = "CopperOre",
+
+                // The item created after the time elapses
+                ToItem = "Copper"
             });
         }
 

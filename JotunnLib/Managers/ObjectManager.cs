@@ -86,6 +86,7 @@ namespace JotunnLib.Managers
                     continue;
                 }
 
+                Debug.Log($"Loaded item conversion for CookingStation: ${pair.Key.name}");
                 pair.Key.m_conversion.Add(pair.Value);
             }
         }
@@ -156,14 +157,20 @@ namespace JotunnLib.Managers
         /// </summary>
         /// <param name="prefabName">The name of the prefab that has the CookingStation</param>
         /// <param name="itemConversion">Item conversion details</param>
-        public void RegisterItemConversion(string prefabName, ItemConversionConfig itemConversion)
+        public void RegisterItemConversion(ItemConversionConfig itemConversion)
         {
-            GameObject prefab = PrefabManager.Instance.GetPrefab(prefabName);
+            if (itemConversion == null)
+            {
+                Debug.LogError("Failed to register ItemConversion with null config");
+                return;
+            }
+
+            GameObject prefab = PrefabManager.Instance.GetPrefab(itemConversion.CookingStation);
             CookingStation cookingStation = prefab?.GetComponent<CookingStation>();
 
             if (!prefab || !cookingStation)
             {
-                Debug.LogError("Failed to register ItemConversion for invalid CookingStation prefab: " + prefabName);
+                Debug.LogError($"Failed to register ItemConversion for invalid CookingStation prefab: ${itemConversion.CookingStation}");
                 return;
             }
 
@@ -171,14 +178,24 @@ namespace JotunnLib.Managers
             
             if (conv == null)
             {
-                Debug.LogError($"Failed to register ItemConversion on ${prefabName} with invalid ItemConversionConfig");
+                Debug.LogError($"Failed to register ItemConversion on ${itemConversion.CookingStation} with invalid ItemConversionConfig");
                 return;
             }
 
             if (cookingStation.m_conversion.Exists(c => c.m_from == conv.m_from))
             {
-                Debug.LogError($"Failed to register ItemConversion on ${prefabName} for item with existing conversion: ${conv.m_from.name}");
+                Debug.LogError($"Failed to register ItemConversion on ${itemConversion.CookingStation} for item with existing conversion: ${conv.m_from.name}");
                 return;
+            }
+
+            if (!conv.m_from.transform.Find("attach"))
+            {
+                Debug.LogWarning($"Warning, 'from' item for ItemConversion ${itemConversion.FromItem} does not have 'attach' child. This item may not show up correctly when placed on the CookingStation. See our docs for more info");
+            }
+
+            if (!conv.m_to.transform.Find("attach"))
+            {
+                Debug.LogWarning($"Warning, 'to' item for ItemConversion ${itemConversion.ToItem} does not have 'attach' child. This item may not show up correctly when placed on the CookingStation. See our docs for more info");
             }
 
             ItemConversions.Add(cookingStation, conv);

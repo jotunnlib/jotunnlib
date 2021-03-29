@@ -9,6 +9,11 @@ namespace JotunnLib.Entities
     public class ItemConversionConfig
     {
         /// <summary>
+        /// The name of the cooking station prefab for which this recipe will be added
+        /// </summary>
+        public string CookingStation { get; set; } = "piece_cookingstation";
+
+        /// <summary>
         /// Amount of time it takes to perform the conversion
         /// </summary>
         public float CookTime { get; set; } = 10f;

@@ -10,7 +10,7 @@ Setting up development environment to create a mod using JotunnLib and Visual st
 3. Adding references to the project:
     - Click `References > Add reference`
 
-    - Navigate to your Valheim folder (should be `<Steam path>/steamapps/common/Valheim/unstripped_corlib`). Add all of the DLLs there _except_ for `Mono.security.dll`, `mscorlib.dll`, `System.configuration.dll`, `System.dll`, and `System.xml.dll`.
+    - Navigate to your Valheim folder (should be `<Steam path>/steamapps/common/Valheim/unstripped_corlib`). Add all of the DLLs there _except_ for `Mono.security.dll`, `mscorlib.dll`, `System.Configuration.dll`, `System.dll`, `System.Core.dll`, and `System.Xml.dll`.
     ![Adding Valheim Assemblies](../images/getting-started/vs-valheim-assemblies.png "Adding Valheim Assemblies")
     
     - Navigate to your BepInEx core folder in Valheim (should be `<Steam path>/steamapps/common/Valheim/BepInEx/core`). Add all of the DLLs there _except_ for `0Harmony20.dll`.

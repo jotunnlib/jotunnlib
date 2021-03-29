@@ -10,6 +10,9 @@
 - name: Recipes
   href: recipes.md
 
+- name: Item Conversions
+  href: item-conversions.md
+
 - name: Pieces
   href: pieces.md
 
