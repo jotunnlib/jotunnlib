@@ -5,9 +5,11 @@ Get the mod on [NexusMods](https://www.nexusmods.com/valheim/mods/507)!
 ## ⚠️ Merger in progress ⚠️
 We're currently working with a few other developers and are in the process of merging JotunnLib with ValheimLib. You can [view our progress here](https://github.com/Valheim-Modding/Jotunn).  
   
-In the meantime, **JotunnLib will no longer be under active development**. However, we will still fix any remaining remaining compatibility issues or breaking bugs.  
+In the meantime, **JotunnLib will no longer be under active development**. However, we will still fix any remaining compatibility issues or breaking bugs.  
   
-With this merger, we're hoping to unify the Valheim modding community, and provide one central library for everyone to use. Due to this, we will be focusing on making the new merged library more powerful, easy to use, and well documented than both ValheimLib and JotunnLib ever were. We will take all feature requests and issues raised on this repo into consideration for the new merged library.
+With this merger, we're hoping to unify the Valheim modding community, and provide one central library for everyone to use. Due to this, we will be focusing on making the new merged library more powerful, easy to use, and well documented than both ValheimLib and JotunnLib ever were. We will take all feature requests and issues raised on this repo into consideration for the new merged library. For any new feature requests, feel free to raise issues on the new repository [here](https://github.com/Valheim-Modding/Jotunn).  
+  
+Additionally, we have plans to make extensive documentation to allow current JotunnLib mods to switch to the new library with minimal effort as soon as it is ready :)  
 
 ## Installation
 Instructions for installing and using JotunnLib as a user:
