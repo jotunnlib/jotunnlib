@@ -76,11 +76,21 @@ namespace JotunnLib.Managers
             loaded = true;
         }
 
-        internal void RegisterPrefab(GameObject prefab, string name)
+        /// <summary>
+        /// Register an existing GameObject as a prefab
+        /// </summary>
+        /// <param name="prefab">The GameObject to register as a prefab</param>
+        /// <param name="name">The name for the prefab. If not provided, will use name of GameObject</param>
+        public void RegisterPrefab(GameObject prefab, string name = null)
         {
+            if (name == null)
+            {
+                name = prefab.name;
+            }
+
             if (GetPrefab(name))
             {
-                Debug.LogError("Prefab already exists: " + name);
+                Debug.LogError("Failed to register prefab that already exists: " + name);
                 return;
             }
 
