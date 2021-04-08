@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
+using System.Linq;
 using UnityEngine;
 
 namespace JotunnLib.Utils
@@ -8,6 +10,12 @@ namespace JotunnLib.Utils
         public static object InvokePrivate(object instance, string name, object[] args = null)
         {
             MethodInfo method = instance.GetType().GetMethod(name, BindingFlags.NonPublic | BindingFlags.Instance);
+
+            if (method == null)
+            {
+                Type[] types = args == null ? new Type[0] : args.Select(arg => arg.GetType()).ToArray();
+                method = instance.GetType().GetMethod(name, types);
+            }
 
             if (method == null)
             {

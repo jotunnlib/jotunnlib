@@ -13,7 +13,7 @@ namespace JotunnLib
     public class JotunnLib : BaseUnityPlugin
     {
         // BepInEx plugin parameters
-        public const string Version = "0.1.5";
+        public const string Version = "0.1.6";
         public const string ModGuid = "com.bepinex.plugins.jotunnlib";
 
         // Load order for managers
