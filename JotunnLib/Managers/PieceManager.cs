@@ -66,10 +66,17 @@ namespace JotunnLib.Managers
             foreach (PieceTable table in Resources.FindObjectsOfTypeAll(typeof(PieceTable)))
             {
                 string name = table.gameObject.name;
-                pieceTables.Add(name, table);
-                loadedTables.Add(name);
 
-                Debug.Log("Loaded existing piece table: " + name);
+                if (!pieceTables.ContainsKey(name))
+                {
+                    pieceTables.Add(name, table);
+                }
+
+                if (!loadedTables.Contains(name))
+                {
+                    loadedTables.Add(name);
+                    Debug.Log("Loaded existing piece table: " + name);
+                }
             }
 
             PieceTableRegister?.Invoke(null, EventArgs.Empty);
