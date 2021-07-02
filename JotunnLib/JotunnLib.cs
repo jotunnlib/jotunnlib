@@ -13,7 +13,7 @@ namespace JotunnLib
     public class JotunnLib : BaseUnityPlugin
     {
         // BepInEx plugin parameters
-        public const string Version = "0.1.6";
+        public const string Version = "0.1.7";
         public const string ModGuid = "com.bepinex.plugins.jotunnlib";
 
         // Load order for managers
@@ -57,15 +57,6 @@ namespace JotunnLib
             initCommands();
 
             Debug.Log("JotunnLib v" + Version + " loaded successfully");
-        }
-
-        private void OnGUI()
-        {
-            // Display version in main menu
-            if (SceneManager.GetActiveScene().name == "start")
-            {
-                GUI.Label(new Rect(Screen.width - 100, 5, 100, 25), "JotunnLib v" + Version);
-            }
         }
 
         private void initCommands()
