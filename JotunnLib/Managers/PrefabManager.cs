@@ -58,12 +58,19 @@ namespace JotunnLib.Managers
 
             foreach (var pair in Prefabs)
             {
-                GameObject prefab = pair.Value;
+                try
+                {
+                    GameObject prefab = pair.Value;
 
-                ZNetScene.instance.m_prefabs.Add(prefab);
-                namedPrefabs.Add(prefab.name.GetStableHashCode(), prefab);
+                    ZNetScene.instance.m_prefabs.Add(prefab);
+                    namedPrefabs.Add(prefab.name.GetStableHashCode(), prefab);
 
-                Debug.Log("Registered prefab: " + pair.Key);
+                    Debug.Log("Registered prefab: " + pair.Key);
+                }
+                catch (Exception ex)
+                {
+                    Debug.Log("Error registering prefab: " + ex);
+                }
             }
 
             // Send event that all prefabs are loaded

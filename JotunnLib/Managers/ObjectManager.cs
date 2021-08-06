@@ -44,19 +44,40 @@ namespace JotunnLib.Managers
             // Load items
             foreach (GameObject obj in Items)
             {
-                ObjectDB.instance.m_items.Add(obj);
-                Debug.Log("Loaded item: " + obj.name);
+                try
+                {
+                    ObjectDB.instance.m_items.Add(obj);
+                    Debug.Log("Loaded item: " + obj.name);
+                }
+                catch (Exception ex)
+                {
+                    Debug.Log("Error loading item: " + ex);
+                }
             }
 
             // Load recipes
             foreach (Recipe recipe in Recipes)
             {
-                ObjectDB.instance.m_recipes.Add(recipe);
-                Debug.Log("Loaded item recipe: " + recipe.name);
+                try
+                {
+                    ObjectDB.instance.m_recipes.Add(recipe);
+                    Debug.Log("Loaded item recipe: " + recipe.name);
+                }
+                catch (Exception ex)
+                {
+                    Debug.Log("Error loading recipe: " + ex);
+                }
             }
 
             // Update hashes
-            ReflectionUtils.InvokePrivate(ObjectDB.instance, "UpdateItemHashes");
+            try
+            {
+                ReflectionUtils.InvokePrivate(ObjectDB.instance, "UpdateItemHashes");
+            }
+            catch (Exception ex)
+            {
+                Debug.Log("Error updating item hashes: " + ex);
+            }
         }
 
         /// <summary>

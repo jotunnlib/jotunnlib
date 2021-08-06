@@ -65,17 +65,24 @@ namespace JotunnLib.Managers
 
             foreach (PieceTable table in Resources.FindObjectsOfTypeAll(typeof(PieceTable)))
             {
-                string name = table.gameObject.name;
-
-                if (!pieceTables.ContainsKey(name))
+                try
                 {
-                    pieceTables.Add(name, table);
+                    string name = table.gameObject.name;
+
+                    if (!pieceTables.ContainsKey(name))
+                    {
+                        pieceTables.Add(name, table);
+                    }
+
+                    if (!loadedTables.Contains(name))
+                    {
+                        loadedTables.Add(name);
+                        Debug.Log("Loaded existing piece table: " + name);
+                    }
                 }
-
-                if (!loadedTables.Contains(name))
+                catch (Exception ex)
                 {
-                    loadedTables.Add(name);
-                    Debug.Log("Loaded existing piece table: " + name);
+                    Debug.Log("Error loading piece table: " + ex);
                 }
             }
 
@@ -83,17 +90,24 @@ namespace JotunnLib.Managers
 
             foreach (var pair in pieceTables)
             {
-                PieceTable table = pair.Value;
-                string name = table.gameObject.name;
-
-                if (loadedTables.Contains(name))
+                try
                 {
-                    continue;
+                    PieceTable table = pair.Value;
+                    string name = table.gameObject.name;
+
+                    if (loadedTables.Contains(name))
+                    {
+                        continue;
+                    }
+
+                    pieceTables.Add(name, table);
+
+                    Debug.Log("Registered piece table: " + name);
                 }
-
-                pieceTables.Add(name, table);
-
-                Debug.Log("Registered piece table: " + name);
+                catch (Exception ex)
+                {
+                    Debug.Log("Error registering piece table: " + ex);
+                }
             }
 
             Debug.Log("---- Loading pieces ----");
