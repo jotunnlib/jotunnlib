@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using BepInEx;
 using HarmonyLib;
 using JotunnLib.ConsoleCommands;
@@ -13,7 +12,7 @@ namespace JotunnLib
     public class JotunnLib : BaseUnityPlugin
     {
         // BepInEx plugin parameters
-        public const string Version = "0.1.7";
+        public const string Version = "0.1.8";
         public const string ModGuid = "com.bepinex.plugins.jotunnlib";
 
         // Load order for managers
