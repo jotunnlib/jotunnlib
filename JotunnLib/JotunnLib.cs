@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using BepInEx;
 using HarmonyLib;
-using JotunnLib.ConsoleCommands;
 using JotunnLib.Managers;
 
 namespace JotunnLib
@@ -60,8 +59,7 @@ namespace JotunnLib
 
         private void initCommands()
         {
-            CommandManager.Instance.RegisterConsoleCommand(new HelpCommand());
-            CommandManager.Instance.RegisterConsoleCommand(new ClearCommand());
+            // No commands to initialize
         }
     }
 }
