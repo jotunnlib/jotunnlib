@@ -3,7 +3,6 @@ using UnityEngine;
 using BepInEx;
 using TestMod.ConsoleCommands;
 using JotunnLib;
-using JotunnLib.ConsoleCommands;
 using JotunnLib.Entities;
 using JotunnLib.Managers;
 using JotunnLib.Utils;
