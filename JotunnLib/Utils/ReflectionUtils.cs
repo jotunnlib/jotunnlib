@@ -51,5 +51,18 @@ namespace JotunnLib.Utils
 
             var.SetValue(instance, value);
         }
+
+        public static T GetPrivateStaticField<T>(Type type, string name)
+        {
+            FieldInfo var = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Static);
+
+            if (var == null)
+            {
+                Debug.LogError("Variable " + name + " does not exist on static type: " + type);
+                return default(T);
+            }
+
+            return (T)var.GetValue(null);
+        }
     }
 }

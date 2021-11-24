@@ -9,6 +9,7 @@ namespace JotunnLib.Managers
     public class CommandManager : Manager
     {
         public static CommandManager Instance { get; private set; }
+        private static List<Terminal.ConsoleCommand> queuedCommands = new List<Terminal.ConsoleCommand>();
 
         private void Awake()
         {
@@ -33,7 +34,33 @@ namespace JotunnLib.Managers
 
         public void RegisterConsoleCommand(Terminal.ConsoleCommand cmd)
         {
+            // Only register commands if the terminal has finished initializing
+            if (!ReflectionUtils.GetPrivateStaticField<bool>(typeof(Terminal), "m_terminalInitialized"))
+            {
+                // Add to queue to initialize later
+                queuedCommands.Add(cmd);
+                return;
+            }
+
             var commands = ReflectionUtils.GetPrivateField<Dictionary<string, Terminal.ConsoleCommand>>(Console.instance, "commands");
+
+            // Register queued commands
+            if (queuedCommands.Count > 0)
+            {
+                foreach (Terminal.ConsoleCommand c in queuedCommands)
+                {
+                    // Cannot have two commands with same name
+                    if (commands.ContainsKey(c.Command))
+                    {
+                        Debug.LogError("Cannot have two console commands with same name: " + cmd.Command);
+                        return;
+                    }
+
+                    commands.Add(c.Command, c);
+                }
+
+                queuedCommands.Clear();
+            }
 
             // Cannot have two commands with same name
             if (commands.ContainsKey(cmd.Command))
