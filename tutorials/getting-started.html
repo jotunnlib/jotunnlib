@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Getting started </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Getting started ">
+    <meta name="generator" content="docfx 2.56.7.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="getting-started">Getting started</h1>
+
+<h2 id="setting-up-development-environment">Setting up development environment</h2>
+<p>Setting up development environment to create a mod using JotunnLib and Visual studio:</p>
+<ol>
+<li>Download <a href="https://valheim.thunderstore.io/package/download/denikson/BepInExPack_Valheim/5.4.701/">BepInEx for Valheim</a> and extract the zip file into your root Valheim directory.</li>
+<li>Create a new Visual Studio project of type <code>Class Library (.NET Framework)</code>. Make sure that you select <code>.NET Framework 4</code> as the target framework. <strong>Do not</strong> select any higher version, as it will be incompatible with Valheim, since it&#39;s compiled using .NET Framework 4.
+<img src="../Documentation/images/getting-started/vs-create-proj.png" alt="Creating a new project" title="Creating a new project"></li>
+<li><p>Adding references to the project:</p>
+<ul>
+<li><p>Click <code>References &gt; Add reference</code></p>
+</li>
+<li><p>Navigate to your Valheim folder (should be <code>&lt;Steam path&gt;/steamapps/common/Valheim/unstripped_corlib</code>). Add all of the DLLs there <em>except</em> for <code>Mono.security.dll</code>, <code>mscorlib.dll</code>, <code>System.configuration.dll</code>, <code>System.dll</code>, and <code>System.xml.dll</code>.
+<img src="../Documentation/images/getting-started/vs-valheim-assemblies.png" alt="Adding Valheim Assemblies" title="Adding Valheim Assemblies"></p>
+</li>
+<li><p>Navigate to your BepInEx core folder in Valheim (should be <code>&lt;Steam path&gt;/steamapps/common/Valheim/BepInEx/core</code>). Add all of the DLLs there <em>except</em> for <code>0Harmony20.dll</code>.
+<img src="../Documentation/images/getting-started/vs-bepinex-assemblies.png" alt="Adding BepInEx Assemblies" title="Adding BepInEx Assemblies"></p>
+</li>
+<li><p>Lastly, navigate to your BepInEx plugins folder, and add <code>JotunnLib.dll</code> as an assembly.</p>
+</li>
+</ul>
+</li>
+<li>Using the <code>NuGet Packge Manager</code>, download and install <code>HarmonyX</code> as a dependency.</li>
+</ol>
+<h2 id="creating-your-mod">Creating your mod</h2>
+<p>To use JotunnLib, you must add it as a BepInEx dependency. If possible, please use our <code>JotunnLib.JotunnLib.ModGuid</code> variable to reference our mod, to prevent against any issues if this changes in the future.</p>
+<pre><code class="lang-cs">namespace TestMod
+{
+    [BepInPlugin(&quot;com.bepinex.plugins.testmod&quot;, &quot;JotunnLib Test Mod&quot;, &quot;0.0.1&quot;)]
+    [BepInDependency(JotunnLib.JotunnLib.ModGuid)]
+    public class TestMod : BaseUnityPlugin
+    {
+        // ...
+    }
+}
+</code></pre><p>That&#39;s it! Now you can go about creating your mod as normal, using any HarmonyX or JotunnLib functionality as you wish.<br>Refer to the following sections for guides on how to use JotunnLib to add custom data to the game.</p>
+<h2 id="installing-your-mod">Installing your mod</h2>
+<p>Just like any other BepInEx mod, you can install it by just putting the mod DLL file in <code>BepInEx/plugins</code>, along with any other assets it may need.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/jotunnlib/jotunnlib/blob/90b20cb85a1c981324891246375b6460c87f76db/JotunnLib/Documentation/tutorials/getting-started.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

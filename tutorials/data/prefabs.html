@@ -1,0 +1,196 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Registering custom prefabs </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Registering custom prefabs ">
+    <meta name="generator" content="docfx 2.56.7.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="registering-custom-prefabs">Registering custom prefabs</h1>
+
+<p><em>Prefabs</em> in Valheim are objects that can be instantiated and used within the world. This includes everything from inventory items, placeable items (Pieces), entities, etc.  </p>
+<p><em>Note: In order to create Pieces, Inventory items, Vegetation, or nearly anything, it <strong>must</strong> have a prefab created first.</em></p>
+<p>Creation/management of prefabs is done through the <a class="xref" href="../../api/JotunnLib.Managers.PrefabManager.html">PrefabManager</a> singleton class.</p>
+<p>Prefabs can be created by creating a handler within your mod&#39;s <code>Awake</code> function for the <a href="xref:JotunnLib.Managers.PrefabRegister">PrefabRegister</a> event.</p>
+<p>Note that prefabs are configured to be persistent by default, so if placed (as a piece or dropped) they&#39;ll be saved with your world. If you wish to change that behaviour, modify the <code>ZNetView</code> component on the prefab and set <code>m_persistent = false</code>.</p>
+<h2 id="existing-prefabs">Existing prefabs</h2>
+<p>For a list of all existing in-game prefabs, check <a href="../../conceptual/prefabs/prefab-list.html">this page</a>. The prefab names are the same as their names when using the <code>spawn</code> console command.</p>
+<h2 id="example">Example</h2>
+<p>In order to create a prefab, there&#39;s a couple different approaches:</p>
+<ul>
+<li><a href="#prefabconfig-approach">PrefabConfig approach</a>: using a <a class="xref" href="../../api/JotunnLib.Entities.PrefabConfig.html">PrefabConfig</a> to hold our Prefab info</li>
+<li><a href="#createprefab-approach">CreatePrefab approach</a>: Using the <code>CreatePrefab</code> functions</li>
+</ul>
+<p>Below we&#39;ll look at both ways of creating the exact same prefab. You&#39;ll notice that the functional approach may look neater, however, it gets unwieldy fairly quickly when you register many prefabs within the same file - hence the PrefabConfig approach is recommended.</p>
+<h3 id="prefabconfig-approach">PrefabConfig approach</h3>
+<p>First, creating our prefab class that inherits from <a class="xref" href="../../api/JotunnLib.Entities.PrefabConfig.html">PrefabConfig</a>. We need to then implement a default constructor, as well as the <code>void Register()</code> method.  </p>
+<p>Within our constructor, we can call the <code>base</code> constructor with either one or two arguments:</p>
+<ul>
+<li><code>base(String ourPrefabName)</code>: Creating an empty prefab with no base object</li>
+<li><code>base(String ourPrefabName, String baseName)</code>: Creating a prefab that&#39;s a copy of the base</li>
+</ul>
+<p>Next, we can implement our <code>void Register()</code> method. In here, we can make any changes we need to the prefab, such as adding components or modifying existing components.  </p>
+<p>To do this, we can use the member variable <code>Prefab</code> that&#39;s of type <code>GameObject</code>. This is set for us after our constructor is called. If we&#39;re inheriting an existing prefab, <code>Prefab</code> will be a copy of what we&#39;ve inherited. Otherwise, it&#39;ll be an empty <code>GameObject</code>.</p>
+<pre><code class="lang-cs">public class TestPrefab : PrefabConfig
+{
+    public TestPrefab() : base(&quot;TestPrefab&quot;, &quot;Wood&quot;)
+    {
+        // Nothing to do here
+        // &quot;Prefab&quot; wil be set for us automatically after this is called
+    }
+
+    public override void Register()
+    {
+        // Configure item drop
+        // ItemDrop is a component on GameObjects which determines info about the item when it&#39;s picked up in the inventory
+        ItemDrop item = Prefab.GetComponent&lt;ItemDrop&gt;();
+        item.m_itemData.m_shared.m_name = &quot;Test Prefab&quot;;
+        item.m_itemData.m_shared.m_description = &quot;We&#39;re using this as a test&quot;;
+        item.m_itemData.m_dropPrefab = Prefab;
+        item.m_itemData.m_shared.m_weight = 1f;
+        item.m_itemData.m_shared.m_maxStackSize = 1;
+        item.m_itemData.m_shared.m_variants = 1;
+    }
+}
+</code></pre><p>Next, creating a handler for <a href="xref:JotunnLib.Managers.PrefabRegister">PrefabRegister</a></p>
+<pre><code class="lang-cs">private void Awake()
+{
+    // Register our handler
+    PrefabManager.Instance.PrefabRegister += registerPrefabs;
+}
+
+private void registerPrefabs(object sender, EventArgs e)
+{
+    // Create a new instance of our TestPrefab
+    PrefabManager.Instance.RegisterPrefab(new TestPrefab());
+}
+</code></pre><h3 id="createprefab-approach">CreatePrefab approach</h3>
+<p>First, creating a handler for <a href="xref:JotunnLib.Managers.PrefabRegister">PrefabRegister</a></p>
+<pre><code class="lang-cs">private void Awake()
+{
+    // Register our handler
+    PrefabManager.Instance.PrefabRegister += registerPrefabs;
+}
+
+private void registerPrefabs(object sender, EventArgs e)
+{
+   // Prefab init code goes here 
+}
+</code></pre><p>Next, we need to actually create our prefab game object</p>
+<pre><code class="lang-cs">private void registerPrefabs(object sender, EventArgs e)
+{
+    // Prefab init code goes here
+    GameObject prefab = PrefabManager.Instance.CreatePrefab(&quot;TestPrefab&quot;, &quot;Wood&quot;);
+
+    ItemDrop item = prefab.GetComponent&lt;ItemDrop&gt;();
+    item.m_itemData.m_shared.m_name = &quot;Test Prefab&quot;;
+    item.m_itemData.m_shared.m_description = &quot;We&#39;re using this as a test&quot;;
+    item.m_itemData.m_dropPrefab = Prefab;
+    item.m_itemData.m_shared.m_weight = 1f;
+    item.m_itemData.m_shared.m_maxStackSize = 1;
+    item.m_itemData.m_shared.m_variants = 1;
+}
+</code></pre><h3 id="our-prefab-in-game">Our prefab in game</h3>
+<p>That&#39;s it!<br>Now if we go in-game and type <code>spawn TestPrefab</code> in our console, it&#39;ll spawn what looks to be a piece of wood on the ground. In fact, this is the item we&#39;ve just created! It however looks like a piece of wood since we copied the existing <code>Wood</code> prefab, and did not change its model.</p>
+<p><img src="../../Documentation/images/data/test-prefab.png" alt="TestPrefab in Game" title="TestPrefab in Game"></p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/jotunnlib/jotunnlib/blob/90b20cb85a1c981324891246375b6460c87f76db/JotunnLib/Documentation/tutorials/data/prefabs.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

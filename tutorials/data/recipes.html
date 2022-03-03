@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Registering custom recipes </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Registering custom recipes ">
+    <meta name="generator" content="docfx 2.56.7.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="registering-custom-recipes">Registering custom recipes</h1>
+
+<p><em>Recipes</em> in Valheim are anything that the player is able to hold in their inventory.<br>Creation of custom recipes is done through the <a class="xref" href="../../api/JotunnLib.Managers.ObjectManager.html">ObjectManager</a> singleton class.</p>
+<p>All recipes will always be loaded <strong>after</strong> all items. However, recipes will be loaded in the order that you call the <code>RegisterRecipe</code> function.</p>
+<p><strong>Note:</strong> You <strong>must</strong> only use names of existing prefabs (either ones you created or default Valheim ones). This can be prefabs that have already been registered by another mod, or that already exist in the game. Here is a <a href="prefabs.html">list of availible prefabs</a>.</p>
+<h2 id="example">Example</h2>
+<p>To create a new recipe, you must first add a handler for the <a class="xref" href="../../api/JotunnLib.Managers.ObjectManager.html#JotunnLib_Managers_ObjectManager_ObjectRegister">ObjectRegister</a> event</p>
+<pre><code class="lang-cs">private void Awake()
+{
+    ObjectManager.Instance.ObjectRegister += initObjects;
+}
+</code></pre><p>then, create the handler. You can register custom items and recipes from this handler. To register custom items, you must either pass a <a class="xref" href="../../api/JotunnLib.Entities.RecipeConfig.html">RecipeConfig</a> instance to the function, or a Valheim <code>Recipe</code> object. The following example demonstrates how to use the <a class="xref" href="../../api/JotunnLib.Entities.RecipeConfig.html">RecipeConfig</a>, as it is easier and less verbose.</p>
+<pre><code class="lang-cs">private void initObjects(object sender, EventArgs e)
+{
+    // Recipes
+    ObjectManager.Instance.RegisterRecipe(new RecipeConfig()
+    {
+        // Name of the recipe (defaults to &quot;Recipe_YourItem&quot;)
+        Name = &quot;Recipe_TestPrefab&quot;,
+
+        // Name of the prefab for the crafted item
+        Item = &quot;TestPrefab&quot;,
+
+        // Name of the prefab for the crafting station we wish to use
+        // Can set this to null or leave out if you want your recipe to be craftable in your inventory
+        CraftingStation = &quot;forge&quot;,
+
+        // List of requirements to craft your item
+        Requirements = new PieceRequirementConfig[]
+        {
+            new PieceRequirementConfig()
+            {
+                // Prefab name of requirement
+                Item = &quot;Blueberries&quot;,
+
+                // Amount required
+                Amount = 2
+            },
+            new PieceRequirementConfig()
+            {
+                // Prefab name of requirement
+                Item = &quot;DeerHide&quot;,
+
+                // Amount required
+                Amount = 1
+            }
+        }
+    });
+}
+</code></pre><p>That&#39;s it! Now, we can visit a forge with some blueberries and deer hide in our inventory, and we can craft our item!</p>
+<p><img src="../../Documentation/images/data/test-recipe.png" alt="Our Recipe in Game" title="Our Recipe in Game"></p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/jotunnlib/jotunnlib/blob/90b20cb85a1c981324891246375b6460c87f76db/JotunnLib/Documentation/tutorials/data/recipes.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

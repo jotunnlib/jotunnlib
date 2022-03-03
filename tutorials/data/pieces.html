@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Registering custom pieces </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Registering custom pieces ">
+    <meta name="generator" content="docfx 2.56.7.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="registering-custom-pieces">Registering custom pieces</h1>
+
+<p><em>Pieces</em> in Valheim are anything that can be built in the game, through means such as the Hammer, Cultivator, or Hoe. This includes things such as plant sapplings, the workbench, and walls. Custom pieces are handled by the <a class="xref" href="../../api/JotunnLib.Managers.PieceManager.html">PieceManager</a> singleton class.  </p>
+<p><strong>Note:</strong> You <strong>must</strong> only use names of existing prefabs (either ones you created or default Valheim ones). This can be prefabs that have already been registered by another mod, or that already exist in the game.  </p>
+<p>In order for a prefab to be a <em>piece</em>, it must have the <code>Piece</code> component attached to the prefab.</p>
+<h2 id="example">Example</h2>
+<p>First, we need to create a prefab, and add the <code>Piece</code> component to it. Here, we use the AddPiece util function from our <a class="xref" href="../../api/JotunnLib.Entities.PrefabConfig.html">PrefabConfig</a> to make it a bit easier to create our piece component with requirements.<br>(For more info on creating prefabs, check the <a href="prefabs.html">Prefabs</a> section).</p>
+<pre><code class="lang-cs">public class TestCubePrefab : PrefabConfig
+{
+    // Create a prefab called &quot;TestCube&quot; with no base
+    public TestCubePrefab() : base(&quot;TestCube&quot;)
+    {
+        // Nothing to  do here
+    }
+
+    public override void Register()
+    {
+        // Add piece component so that we can register this as a piece
+        // This function is just a util function that will add a piece, and help setup some of the basic requirements of it
+        Piece piece = AddPiece(new PieceConfig()
+        {
+            // The name that shows up in game
+            Name = &quot;Test cube&quot;,
+
+            // The description that shows up in game
+            Description = &quot;A nice test cube&quot;,
+
+            // What items we&#39;ll need to build it
+            Requirements = new PieceRequirementConfig[]
+            {
+                new PieceRequirementConfig()
+                {
+                    // Name of item prefab we need
+                    Item = &quot;Wood&quot;,
+
+                    // Amount we need
+                    Amount = 1
+                }
+            }
+        });
+
+        // Additional piece config if you need here...
+    }
+}
+</code></pre><p>Next, in our mod&#39;s <code>Awake</code> function, we need to create an event handler for <a class="xref" href="../../api/JotunnLib.Managers.PrefabManager.html#JotunnLib_Managers_PrefabManager_PrefabRegister">PrefabRegister</a> to register our prefab, and <a class="xref" href="../../api/JotunnLib.Managers.PieceManager.html#JotunnLib_Managers_PieceManager_PieceRegister">PieceRegister</a> to register our Piece</p>
+<pre><code class="lang-cs">private void Awake()
+{
+    PrefabManager.Instance.PrefabRegister += registerPrefabs;
+    PieceManager.Instance.PieceRegister += registerPieces;
+}
+</code></pre><p>Finally, we need to implement those handlers and register our prefab and piece</p>
+<pre><code class="lang-cs">// Register new prefabs
+private void registerPrefabs(object sender, EventArgs e)
+{
+    PrefabManager.Instance.RegisterPrefab(new TestCubePrefab());
+}
+
+// Register new pieces
+private void registerPieces(object sender, EventArgs e)
+{
+    // Register our piece in the &quot;Hammer&quot;, using the &quot;TestCube&quot; prefab
+    PieceManager.Instance.RegisterPiece(&quot;Hammer&quot;, &quot;TestCube&quot;);
+}
+</code></pre><p>That&#39;s all! Now, if we pick up a piece of Wood in game we&#39;ll get the recipe, and can now build our cube using the hammer!  </p>
+<p><img src="../../Documentation/images/data/cube-piece-inv.png" alt="Cube Piece in Build Menu" title="Cube Piece in Build Menu">
+<img src="../../Documentation/images/data/cube-piece-world.png" alt="Cube Piece in World" title="Cube Piece in World"></p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/jotunnlib/jotunnlib/blob/90b20cb85a1c981324891246375b6460c87f76db/JotunnLib/Documentation/tutorials/data/pieces.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>
