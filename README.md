@@ -1,15 +1,15 @@
 # JotunnLib
 Jötunn (_/ˈjɔːtʊn/, "giant"_) Lib is a modding library for Valheim, with the goal of making the lives of mod developers easier.  
-Get the mod on [NexusMods](https://www.nexusmods.com/valheim/mods/507)!
+Get the mod on [NexusMods](https://www.nexusmods.com/valheim/mods/507) or [Thunderstore](https://valheim.thunderstore.io/package/JotunnLibTeam/JotunnLib/)!
 
-## ⚠️ Merger in progress ⚠️
-We're currently working with a few other developers and are in the process of merging JotunnLib and ValheimLib to create a brand new library. You can [view our progress here](https://github.com/Valheim-Modding/Jotunn).  
-  
-In the meantime, **JotunnLib will no longer be under active development**. However, we will still fix any remaining compatibility issues or breaking bugs.  
-  
-With this merger, we're hoping to unify the Valheim modding community, and provide one central library for everyone to use. Due to this, we will be focusing on making the new merged library more powerful, easy to use, and well documented than both ValheimLib and JotunnLib ever were. We will take all feature requests and issues raised on this repo into consideration for the new merged library. For any new feature requests, feel free to raise issues on the new repository [here](https://github.com/Valheim-Modding/Jotunn).  
-  
-Additionally, we have plans to make extensive documentation to allow current JotunnLib mods to switch to the new library with minimal effort as soon as it is ready :)  
+## ❗❗ Deprecation notice ❗❗
+**JotunnLib is no longer under active development**, and has not been for quite some time. If you are looking to create a mod, **please  use [Jötunn, the Valheim Library](https://github.com/Valheim-Modding/Jotunn) instead!** If you are installing JotunnLib as a dependency for any mods, go ahead, but please bug the mod author to make the switch to JVL instead :)
+
+The only updates that will be made to JotunnLib going forward will be to fix any compatibilty issues or gamebreaking issues - no new features will be added.
+
+[Jötunn, the Valheim Library](https://github.com/Valheim-Modding/Jotunn) is the direct successor to JotunnLib. It was originally created by the teams behind ValheimLib and JotunnLib as a means to unify the Valheim modding community, and it has evolved into a massive project with many contributors from the community. 
+
+Thank you again to all the developers and players who tried out and used the original JotunnLib ❤️
 
 ## Installation
 Instructions for installing and using JotunnLib as a user:
